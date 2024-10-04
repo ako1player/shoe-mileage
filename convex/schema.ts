@@ -10,5 +10,6 @@ export default defineSchema({
     name: v.string(),
     miles: v.string(),
     userId: v.id("users"),
+    shouldDelete: v.optional(v.boolean()),
   }),
 });

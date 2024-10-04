@@ -18,11 +18,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "convex/react";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { api } from "../../../../convex/_generated/api";
 
 const formSchema = z.object({
     shoe: z.string().min(1).max(200, "Name is required"),
@@ -42,66 +45,32 @@ export default function UploadButton() {
         },
     })
 
-    // const generateUploadUrl = useMutation(api.files.generateUploadUrl)
-
-    // async function onSubmit(values: z.infer<typeof formSchema>) {
-    //     if (!orgId) return;
-
-    //     const postUrl = await generateUploadUrl();
-
-    //     const fileType = values.file[0].type;
-
-    //     const result = await fetch(postUrl, {
-    //         method: "POST",
-    //         headers: { "Content-Type": fileType },
-    //         body: values.file[0],
-    //     });
-    //     const { storageId } = await result.json();
-
-    //     const types = {
-    //         "image/png": "image",
-    //         "application/pdf": "pdf",
-    //         "text/csv": "csv",
-    //     } as Record<string, Doc<"files">["type"]>;
-
-    //     try {
-    //         await createFile({
-    //             name: values.title,
-    //             fileId: storageId,
-    //             orgId,
-    //             type: types[fileType],
-    //         });
-
-    //         form.reset();
-
-    //         setIsFileDialogOpen(false);
-
-    //         toast({
-    //             variant: "success",
-    //             title: "File Uploaded",
-    //             description: "Now everyone can view your file",
-    //         });
-    //     } catch (err) {
-    //         toast({
-    //             variant: "destructive",
-    //             title: "Something went wrong",
-    //             description: "Your file could not be uploaded, try again later",
-    //         });
-    //     }
-    // }
-
-    // let orgId: string | undefined = undefined;
-
-    // if (organization.isLoaded && user.isLoaded) {
-    //     orgId = organization.organization?.id ?? user.user?.id;
-    // }
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
-        form.reset();
+        try {
+            await createShoeMileage({
+                name: values.shoe,
+                miles: values.miles
+            });
+            form.reset();
+
+            setIsFileDialogOpen(false);
+
+            toast({
+                variant: "default",
+                title: "Shoe Data Created",
+                description: "keep track of those miles!",
+            });
+        } catch (err) {
+            toast({
+                variant: "destructive",
+                title: "Something went wrong",
+                description: "Your file could not be uploaded, try again later",
+            });
+        }
     }
     const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
 
-    // const createFile = useMutation(api.files.createFile)
+    const createShoeMileage = useMutation(api.shoes.createShoeMileage)
     return (
         <Dialog
             open={isFileDialogOpen}
