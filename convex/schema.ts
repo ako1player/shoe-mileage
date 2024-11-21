@@ -11,5 +11,5 @@ export default defineSchema({
     miles: v.string(),
     userId: v.id("users"),
     shouldDelete: v.optional(v.boolean()),
-  }),
+  }).index("by_userId", ["userId"]),
 });
