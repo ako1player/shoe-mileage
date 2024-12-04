@@ -26,13 +26,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 const formSchema = z.object({
-    shoe: z.string().min(1).max(200, "Name is required"),
     miles: z.string().min(1, "Miles is Required")
 })
 
-export default function UploadButton() {
+export default function EditButton({ shoeId, miles }: { shoeId: Id<"shoes">, miles: string }) {
     // const { toast } = useToast();
     // const organization = useOrganization();
     // const user = useUser();
@@ -40,16 +40,15 @@ export default function UploadButton() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            shoe: "",
             miles: "",
         },
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            await createShoeMileage({
-                name: values.shoe,
-                miles: values.miles
+            await updateShoeMileage({
+                miles: values.miles,
+                id: shoeId
             });
             form.reset();
 
@@ -70,7 +69,7 @@ export default function UploadButton() {
     }
     const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
 
-    const createShoeMileage = useMutation(api.shoes.createShoeMileage)
+    const updateShoeMileage = useMutation(api.shoes.updateShoeMileage);
     return (
         <Dialog
             open={isFileDialogOpen}
@@ -80,11 +79,11 @@ export default function UploadButton() {
             }}
         >
             <DialogTrigger asChild className="mb-2">
-                <Button>Add Shoe</Button>
+                <Button>Edit Miles</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle className="mb-8">Create New Shoe Form</DialogTitle>
+                    <DialogTitle className="mb-8">Edit Your Mileage</DialogTitle>
                     <DialogDescription>
                         Keep track of your shoe mileage
                     </DialogDescription>
@@ -96,26 +95,12 @@ export default function UploadButton() {
                             <div className="flex space-x-4 items-end">
                                 <FormField
                                     control={form.control}
-                                    name="shoe"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Shoe Name</FormLabel>
-                                            <FormControl>
-                                                <Input {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
                                     name="miles"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Miles</FormLabel>
                                             <FormControl>
-                                                <Input {...field} />
+                                                <Input {...field} placeholder={miles} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

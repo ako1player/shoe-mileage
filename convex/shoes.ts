@@ -64,3 +64,22 @@ export const getShoes = query({
     return shoes;
   },
 });
+
+//update shoe mileage
+export const updateShoeMileage = mutation({
+  args: {
+    miles: v.string(),
+    id: v.id("shoes"),
+  },
+  async handler(ctx, args) {
+    const user = await userIdentity(ctx);
+
+    if (!user) {
+      throw new ConvexError("you are not authenticated");
+    }
+
+    await ctx.db.patch(args.id, {
+      miles: args.miles,
+    });
+  },
+});

@@ -11,7 +11,7 @@ export function Header() {
                     {/* {/* <OrganizationSwitcher /> */}
                     <UserButton />
                     <SignedOut>
-                        <SignInButton>
+                        <SignInButton forceRedirectUrl={"/dashboard"}>
                             <Button>Sign In</Button>
                         </SignInButton>
                     </SignedOut>
