@@ -1,6 +1,7 @@
 "use client";
 
 import EditButton from "@/app/dashboard/_components/edit-button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useUser } from "@clerk/nextjs";
@@ -28,8 +29,11 @@ export default function ShoeList() {
                             <Label>Miles</Label><p>{shoe.miles}</p>
                         </div>
                     </CardContent>
-                    <CardFooter>
-                        <EditButton shoeId={shoe._id} miles={shoe.miles} />
+                    <CardFooter className="">
+                        <div className="flex gap-1">
+                            <EditButton shoeId={shoe._id} miles={shoe.miles} />
+                            <Button variant={"destructive"}>Retire Shoe</Button>
+                        </div>
                     </CardFooter>
                 </Card>
             ))}

@@ -19,9 +19,9 @@ export default function Home() {
               >
                 Get started
               </Link>
-              {/* <Link href="#" className="text-sm font-semibold leading-6 ">
+              <Link href="/learn-more" className="text-sm font-semibold leading-6 ">
                 Learn more <span aria-hidden="true">→</span>
-              </Link> */}
+              </Link>
             </div>
           </div>
         </div>
