@@ -28,8 +28,8 @@ import { z } from "zod";
 import { api } from "../../../../convex/_generated/api";
 
 const formSchema = z.object({
-    shoe: z.string().min(1).max(200, "Name is required"),
-    miles: z.string().min(1, "Miles is Required")
+    name: z.string().trim().min(1).max(200, "Name is required"),
+    miles: z.string().trim().min(1, "Miles is Required")
 })
 
 export default function UploadButton() {
@@ -40,7 +40,7 @@ export default function UploadButton() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            shoe: "",
+            name: "",
             miles: "",
         },
     })
@@ -48,7 +48,7 @@ export default function UploadButton() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             await createShoeMileage({
-                name: values.shoe,
+                name: values.name,
                 miles: values.miles
             });
             form.reset();
@@ -96,7 +96,7 @@ export default function UploadButton() {
                             <div className="flex space-x-4 items-end">
                                 <FormField
                                     control={form.control}
-                                    name="shoe"
+                                    name="name"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Shoe Name</FormLabel>
