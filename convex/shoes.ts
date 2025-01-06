@@ -139,24 +139,3 @@ export const retireShoe = mutation({
     }
   },
 });
-
-export const getAllRetiredShoes = query({
-  args: {
-    userId: v.string(),
-  },
-
-  async handler(ctx) {
-    const user = await userIdentity(ctx);
-
-    if (!user) {
-      throw new ConvexError("you are not authenticated");
-    }
-
-    const retiredShoes = await ctx.db
-      .query("retiredShoes")
-      .withIndex("by_userId_shoeId", (q) => q.eq("userId", user.user._id))
-      .collect();
-
-    return retiredShoes;
-  },
-});
