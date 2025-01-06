@@ -12,4 +12,8 @@ export default defineSchema({
     userId: v.id("users"),
     shouldDelete: v.optional(v.boolean()),
   }).index("by_userId", ["userId"]),
+  retiredShoes: defineTable({
+    shoeId: v.id("shoes"),
+    userId: v.id("users"),
+  }).index("by_userId_shoeId", ["userId", "shoeId"]),
 });

@@ -1,9 +1,6 @@
 "use client";
 
-import EditButton from "@/app/dashboard/_components/edit-button";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { ShoeCard } from "@/app/dashboard/_components/shoe-card";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -11,35 +8,49 @@ import { api } from "../../../../convex/_generated/api";
 export default function ShoeList() {
     const user = useUser();
 
-    let userId: string | undefined = undefined;
+    const userId = user.isLoaded ? user.user?.id : undefined;
 
-    if (user.isLoaded) {
-        userId = user.user?.id;
-    }
-    const getShoes = useQuery(api.shoes.getShoes, userId ? { userId } : "skip");
-    const shoes = getShoes?.map((shoe) => shoe);
+    // Fetch non-retired shoes
+    const nonRetiredShoes = useQuery(
+        api.shoes.getShoes,
+        userId ? { userId, retireShoe: false } : "skip"
+    );
+
+    // Fetch retired shoes
+    const retiredShoes = useQuery(
+        api.shoes.getShoes,
+        userId ? { userId, retireShoe: true } : "skip"
+    );
+
     return (
-        <div className="flex gap-2">
-            {shoes?.map((shoe, key) => (
-                <Card className="w-[250px]" key={key}>
-                    <CardHeader></CardHeader>
-                    <CardContent className="grid gap-4">
-                        <p>{shoe.name}</p>
-                        <div className="flex gap-2 items-center content-center">
-                            <Label>Miles</Label><p>{shoe.miles}</p>
-                        </div>
-                    </CardContent>
-                    <CardFooter className="">
-                        <div className="flex gap-1">
-                            <EditButton shoeId={shoe._id} miles={shoe.miles} />
-                            <Button variant={"destructive"}>Retire Shoe</Button>
-                        </div>
-                    </CardFooter>
-                </Card>
-            ))}
-            {shoes?.length === 0 && (
-                <div>You have no shoes on record.</div>
-            )}
+        <div className="space-y-8">
+            {/* Non-Retired Shoes Section */}
+            <div>
+                <h1 className="text-xl font-bold">Active Shoes</h1>
+                <div className="flex gap-2">
+                    {nonRetiredShoes && nonRetiredShoes.length > 0 ? (
+                        nonRetiredShoes.map((shoe) => (
+                            <ShoeCard key={shoe._id} shoe={shoe} />
+                        ))
+                    ) : (
+                        <div>You have no active shoes on record.</div>
+                    )}
+                </div>
+            </div>
+
+            {/* Retired Shoes Section */}
+            <div>
+                <h1 className="text-xl font-bold">Retired Shoes</h1>
+                <div className="flex gap-2">
+                    {retiredShoes && retiredShoes.length > 0 ? (
+                        retiredShoes.map((shoe) => (
+                            <ShoeCard key={shoe._id} shoe={shoe} retired={true} />
+                        ))
+                    ) : (
+                        <div>You have no retired shoes on record.</div>
+                    )}
+                </div>
+            </div>
         </div>
-    )
+    );
 }
