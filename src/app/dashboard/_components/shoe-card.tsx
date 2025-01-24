@@ -16,7 +16,7 @@ export function ShoeCard({ shoe, retired }: { shoe: Doc<"shoes">, retired?: bool
             <CardContent className="grid gap-4">
                 <p>{shoe.name}</p>
                 <div className="flex gap-2 items-center content-center">
-                    <Label>Miles</Label><p>{shoe.miles}</p>
+                    <Label>Current Miles:</Label><p>{shoe.miles}</p>
                 </div>
             </CardContent>
             <CardFooter className="">
@@ -24,7 +24,7 @@ export function ShoeCard({ shoe, retired }: { shoe: Doc<"shoes">, retired?: bool
                     {retired ? (<>
                         <Button onClick={() => { retireShoe({ shoeId: shoe._id }) }} variant={"destructive"}>Unretire Shoe</Button>
                     </>) : (
-                        <div>
+                        <div className="flex gap-1">
                             <EditButton shoeId={shoe._id} miles={shoe.miles} />
                             <Button onClick={() => { retireShoe({ shoeId: shoe._id }) }} variant={"destructive"}>Retire Shoe</Button>
                         </div>
