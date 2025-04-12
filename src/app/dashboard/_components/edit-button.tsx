@@ -56,8 +56,7 @@ export default function EditButton({ shoeId, miles }: { shoeId: Id<"shoes">, mil
 
             toast({
                 variant: "default",
-                title: "Shoe Data Created",
-                description: "keep track of those miles!",
+                title: "Shoe Mileage Updated",
             });
         } catch (err) {
             toast({
